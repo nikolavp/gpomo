@@ -56,6 +56,10 @@ class Gpomo:
       self.statusIcon.connect('popup-menu', self.right_click, self.menu)
       self.statusIcon.set_visible(1)
 
+      self.configItem = gtk.MenuItem(_("Configuration"))
+      self.configItem.connect('activate', self.config, self.statusIcon)
+      self.menu.append(self.configItem)
+
       self.aboutItem = gtk.MenuItem(_("About"))
       self.aboutItem.connect('activate', self.about, self.statusIcon)
       self.menu.append(self.aboutItem)
@@ -103,6 +107,26 @@ class Gpomo:
       self.about.set_authors(["%s <%s>" % (__author__,__email__)])
       self.about.run()
       self.about.destroy()
+
+   def config(self, widget, data = None):
+      minuteStr   = gtk.Label(_("Timeout"))
+      minuteTxt   = gtk.Entry()
+      minuteTxt.set_text(str(self.timeout))
+
+      dialog      = gtk.Dialog(_("Configuration"),None,gtk.DIALOG_MODAL,(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+      dialog.vbox.pack_start(minuteStr)
+      dialog.vbox.pack_start(minuteTxt)
+
+      minuteStr.show()
+      minuteTxt.show()
+      response    = dialog.run()
+      dialog.destroy()
+
+      if response==gtk.RESPONSE_REJECT:
+         return
+
+      self.timeout = int(minuteTxt.get_text())
+      self.gconf.set_int("/apps/gpomo/timeout",self.timeout)
 
    def quit(self,widget,data=None):
       gtk.main_quit()
