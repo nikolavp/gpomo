@@ -41,7 +41,12 @@ _ = gettext.gettext
 class Gpomo:
    
    def __init__(self):
-      self.timeout = 25
+      self.gconf     = gconf.client_get_default()
+      self.timeout   = self.gconf.get_int("/apps/gpomo/timeout")
+      if self.timeout<1:
+         self.timeout = 25
+         self.gconf.set_int("/apps/gpomo/timeout",self.timeout)
+
       self.menu = gtk.Menu()
 
       self.statusIcon = gtk.StatusIcon()
