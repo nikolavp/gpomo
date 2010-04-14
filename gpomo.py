@@ -80,7 +80,11 @@ class Gpomo:
       data.popup(None, None, gtk.status_icon_position_menu, button, time, self.statusIcon)
 
    def left_click(self,widget,data):
-      pass
+      dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,gtk.MESSAGE_QUESTION,gtk.BUTTONS_YES_NO,_("Are you sure you want to start a new pomodoro?"))
+      rsp = dialog.run()
+      dialog.destroy()
+      if rsp==gtk.RESPONSE_NO:
+         return
 
    def about(self,widget,data=None):
       self.about = gtk.AboutDialog()
