@@ -48,6 +48,11 @@ class Gpomo:
    
    def __init__(self):
       self.gconf     = gconf.client_get_default()
+      self.completes = 0
+      self.breaks    = 0
+      self.longbreaks= 0
+      self.canceleds = 0
+      self.canceled  = False
 
       self.timeout   = self.gconf.get_int("/apps/gpomo/timeout")
       if self.timeout<1:
@@ -77,6 +82,10 @@ class Gpomo:
       self.configItem.connect('activate', self.config, self.statusIcon)
       self.menu.append(self.configItem)
 
+      self.statItem = gtk.MenuItem(_("Statistics"))
+      self.statItem.connect('activate', self.stats, self.statusIcon)
+      self.menu.append(self.statItem)
+
       self.aboutItem = gtk.MenuItem(_("About"))
       self.aboutItem.connect('activate', self.about, self.statusIcon)
       self.menu.append(self.aboutItem)
@@ -85,7 +94,7 @@ class Gpomo:
       self.quitItem.connect('activate', self.quit, self.statusIcon)
       self.menu.append(self.quitItem)
 
-      self.set_tooltip(_("No active pomodoros"))
+      self.default_state()
       if notify>0:
          pynotify.init("Gpomo")
 
@@ -103,14 +112,21 @@ class Gpomo:
             return path
       return None         
 
+   def stats_str(self):
+      return "%d pomodoro(s) completed\n%d pomodoro(s) canceled\n%d breaks\n%d long breaks" % (self.completes,self.canceleds,self.breaks,self.longbreaks)
+
+   def stats(self,widget,data):
+      self.show_info(self.stats_str())
+
    def show_error(self,msg):
       self.show_dialog(gtk.MESSAGE_ERROR,msg)
 
    def show_info(self,msg):
-      self.show_dialog(gtk.MESSAGE_INFO,msg)
+      self.show_dialog(gtk.MESSAGE_INFO,"About this session\n\n%s" % msg)
 
    def show_dialog(self,msg_type,msg):    
       dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,msg_type,gtk.BUTTONS_OK,msg)
+      dialog.set_title(__appname__)
       dialog.run()
       dialog.destroy()
 
@@ -120,20 +136,22 @@ class Gpomo:
 
    def left_click(self,widget,data):
       if self.completed:
-         self.blinking(False)
-         self.statusIcon.set_from_file(self.get_icon("gray.png"))
+         self.default_state()
          self.completed = False
          return
 
+      if self.thread==None:
+         dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,gtk.MESSAGE_QUESTION,gtk.BUTTONS_YES_NO,_("Are you sure you want to start a new pomodoro?"))
+         rsp = dialog.run()
+         dialog.destroy()
+         if rsp==gtk.RESPONSE_NO:
+            return
+      self.start_pomodoro()
+
+   def default_state(self):
       self.blinking(False)
       self.statusIcon.set_from_file(self.get_icon("gray.png"))
-
-      dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,gtk.MESSAGE_QUESTION,gtk.BUTTONS_YES_NO,_("Are you sure you want to start a new pomodoro?"))
-      rsp = dialog.run()
-      dialog.destroy()
-      if rsp==gtk.RESPONSE_NO:
-         return
-      self.start_pomodoro()
+      self.set_tooltip(_("Click to start a pomodoro\n%s") % self.stats_str())
 
    def start_pomodoro(self):
       if self.thread!=None:
@@ -143,25 +161,43 @@ class Gpomo:
          if rsp==gtk.RESPONSE_NO:
             return
          else:
-            self.thread.stop()
+            self.cancel_pomodoro()
+            return
 
       self.completed = False
-      self.thread = PomoThread(self,self.timeout)
+      self.canceled  = False
+      self.thread    = PomoThread(self,self.timeout)
       self.thread.start()
+
+   def cancel_pomodoro(self):
+      self.completed = False
+      self.canceled  = True
+      self.canceleds += 1
+      self.thread.stop()
+      self.default_state()
+      self.thread = None
 
    def complete_pomodoro(self):
       self.thread = None
-      self.statusIcon.set_from_file(self.get_icon("red.png"))
-      self.set_tooltip("Pomodoro completed!")
-      self.blinking(True)
-      self.show_info("Pomodoro complete!")
+      if self.canceled==False:
+         msg = _("Pomodoro completed!")
+         self.statusIcon.set_from_file(self.get_icon("red.png"))
+         self.blinking(True)
+         self.set_tooltip(msg)
+         self.show_info(msg)
+         self.completed = True
+         self.completes += 1
+      else:
+         self.default_state()
+
       self.completed = True
+      self.canceled  = False
 
    def blinking(self,blink):
       self.statusIcon.set_blinking(blink)
 
    def update_time(self,sec):
-      self.set_tooltip(_("%d minute(s) to complete pomodoro") % (self.timeout-(sec/60)))
+      self.set_tooltip(_("%d minute(s) to complete pomodoro, click to cancel") % (self.timeout-(sec/60)))
       slice = (self.timeout/3.0)*60
       if sec<slice:
          self.statusIcon.set_from_file(self.get_icon("green.png"))
@@ -184,6 +220,7 @@ class Gpomo:
       self.about.set_website(__website__)
       self.about.set_website_label(__website__)
       self.about.set_authors(["%s <%s>" % (__author__,__email__)])
+      self.about.set_logo(gtk.gdk.pixbuf_new_from_file(self.get_icon("red.png")))
       self.about.run()
       self.about.destroy()
 

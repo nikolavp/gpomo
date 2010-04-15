@@ -8,9 +8,11 @@ class PomoThread(threading.Thread):
       self.gui = gui
       self.timeout = timeout
       self.running = True
+      self.stopped = False
 
    def stop(self):
       self.running = False
+      self.stopped = True
 
    def run(self):
       count    = 0
@@ -25,4 +27,6 @@ class PomoThread(threading.Thread):
          except:
             print "Error"
             break
-      gobject.idle_add(self.gui.complete_pomodoro)
+
+      if not self.stopped:
+         gobject.idle_add(self.gui.complete_pomodoro)
