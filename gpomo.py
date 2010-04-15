@@ -78,6 +78,7 @@ class Gpomo:
          pynotify.init("Gpomo")
 
       self.thread = None
+      self.completed = False
       gtk.main()
 
    def set_tooltip(self,text):
@@ -106,8 +107,15 @@ class Gpomo:
       data.popup(None, None, gtk.status_icon_position_menu, button, time, self.statusIcon)
 
    def left_click(self,widget,data):
+      if self.completed:
+         self.blinking(False)
+         self.statusIcon.set_from_file(self.get_icon("gray.png"))
+         self.completed = False
+         return
+
       self.blinking(False)
       self.statusIcon.set_from_file(self.get_icon("gray.png"))
+
       dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,gtk.MESSAGE_QUESTION,gtk.BUTTONS_YES_NO,_("Are you sure you want to start a new pomodoro?"))
       rsp = dialog.run()
       dialog.destroy()
@@ -125,6 +133,7 @@ class Gpomo:
          else:
             self.thread.stop()
 
+      self.completed = False
       self.thread = PomoThread(self,self.timeout)
       self.thread.start()
 
@@ -134,6 +143,7 @@ class Gpomo:
       self.set_tooltip("Pomodoro completed!")
       self.blinking(True)
       self.show_info("Pomodoro complete!")
+      self.completed = True
 
    def blinking(self,blink):
       self.statusIcon.set_blinking(blink)
@@ -150,6 +160,7 @@ class Gpomo:
 
       if sec>=(slice*2)+(slice/2) and not self.statusIcon.get_blinking():
            self.statusIcon.set_blinking(True)
+           self.set_tooltip(_("Few seconds to complete pomodoro"))
 
    def about(self,widget,data=None):
       self.about = gtk.AboutDialog()
