@@ -116,13 +116,13 @@ class Gpomo:
       return "%d pomodoro(s) completed\n%d pomodoro(s) canceled\n%d breaks\n%d long breaks" % (self.completes,self.canceleds,self.breaks,self.longbreaks)
 
    def stats(self,widget,data):
-      self.show_info(self.stats_str())
+      self.show_info("About this session\n\n%s" % self.stats_str())
 
    def show_error(self,msg):
       self.show_dialog(gtk.MESSAGE_ERROR,msg)
 
    def show_info(self,msg):
-      self.show_dialog(gtk.MESSAGE_INFO,"About this session\n\n%s" % msg)
+      self.show_dialog(gtk.MESSAGE_INFO,msg)
 
    def show_dialog(self,msg_type,msg):    
       dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,msg_type,gtk.BUTTONS_OK,msg)
