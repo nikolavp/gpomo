@@ -54,6 +54,7 @@ class Gpomo:
       self.longbreaks= 0
       self.canceleds = 0
       self.canceled  = False
+      self.locked    = False
       self.started   = datetime.datetime.now()
 
       self.timeout   = self.gconf.get_int("/apps/gpomo/timeout")
@@ -182,13 +183,19 @@ class Gpomo:
    def complete_pomodoro(self):
       self.thread = None
       if self.canceled==False:
-         msg = _("Pomodoro completed!")
+         self.completed = True
+         self.completes += 1
+         need_a_long_break = (self.completed % 4)==0
+
+         if need_a_long_break:
+            msg = _("Pomodoro completed, 4 in a row!\nTake a %d minutes break now, you deserve it.") % self.longer
+         else:
+            msg = _("Pomodoro completed!\nTake a %d minutes break now.") % self.interval
+
          self.statusIcon.set_from_file(self.get_icon("red.png"))
          self.blinking(True)
          self.set_tooltip(msg)
          self.show_info(msg)
-         self.completed = True
-         self.completes += 1
       else:
          self.default_state()
 
