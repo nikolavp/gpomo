@@ -11,6 +11,7 @@ __date__       = "$Date: 2010/04/12 12:00:00$"
 import os
 import sys
 import gtk
+import glob
 import gobject
 import pygtk
 import gconf
@@ -57,6 +58,7 @@ class Gpomo:
       self.canceled  = False
       self.locked    = False
       self.started   = datetime.datetime.now()
+      self.task      = None
 
       self.timeout   = self.gconf.get_int("/apps/gpomo/timeout")
       if self.timeout<1:
@@ -98,13 +100,25 @@ class Gpomo:
       self.quitItem.connect('activate', self.quit, self.statusIcon)
       self.menu.append(self.quitItem)
 
+      self.init_managers()
       self.default_state()
       if notify>0:
          pynotify.init("Gpomo")
 
       self.thread = None
       self.completed = False
+
       gtk.main()
+
+   def init_managers(self):
+      self.managers = []
+      sys.path.append("./managers")
+      list = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob("managers/*.py")]
+      for manager in list:
+         mod = __import__(manager)
+         cls = getattr(mod,manager.capitalize())
+         self.managers.append(cls())
+         self.set_tooltip(_("%s task manager loaded") % manager.capitalize())
 
    def set_tooltip(self,text):
       self.statusIcon.set_tooltip(text)
@@ -149,9 +163,7 @@ class Gpomo:
          return
 
       if self.thread==None:
-         dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,gtk.MESSAGE_QUESTION,gtk.BUTTONS_YES_NO,_("Are you sure you want to start a new pomodoro?"))
-         rsp = dialog.run()
-         dialog.destroy()
+         rsp = self.ask(_("Are you sure you want to start a new pomodoro?"))
          if rsp==gtk.RESPONSE_NO:
             return
       self.start_pomodoro()
@@ -161,16 +173,34 @@ class Gpomo:
       self.statusIcon.set_from_file(self.get_icon("gray.png"))
       self.set_tooltip(_("Click to start a pomodoro\n%s") % self.stats_str())
 
+   def ask(self,msg):
+      dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,gtk.MESSAGE_QUESTION,gtk.BUTTONS_YES_NO,msg)
+      rsp = dialog.run()
+      dialog.destroy()
+      return rsp
+
+   def choose_task(self,tasks):
+      self.task = tasks[0]
+
    def start_pomodoro(self):
       if self.thread!=None:
-         dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,gtk.MESSAGE_QUESTION,gtk.BUTTONS_YES_NO,_("Cancel current pomodoro?"))
-         rsp = dialog.run()
-         dialog.destroy()
+         rsp = self.ask(_("Cancel current pomodoro?"))
          if rsp==gtk.RESPONSE_NO:
             return
          else:
             self.cancel_pomodoro()
             return
+
+      tasks = []
+      for manager in self.managers:
+         count = manager.task_count()
+         for i in range(0,count):
+            id, name, due = manager.get_task(i)
+            tasks.append([manager,id,name])
+
+      if len(tasks)>0:
+         response = self.ask(_("Do you want to associate your pomodoro to a task?"))
+         self.choose_task(tasks)
 
       self.completed = False
       self.canceled  = False
@@ -184,6 +214,7 @@ class Gpomo:
       self.thread.stop()
       self.default_state()
       self.thread = None
+      self.task   = None
 
    def lock(self,lock):
       if lock:
