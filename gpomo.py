@@ -19,6 +19,7 @@ import gettext
 import threading
 
 from pomo_thread import *
+from configwindow import *
 
 pygtk.require('2.0')
 
@@ -47,10 +48,21 @@ class Gpomo:
    
    def __init__(self):
       self.gconf     = gconf.client_get_default()
+
       self.timeout   = self.gconf.get_int("/apps/gpomo/timeout")
       if self.timeout<1:
          self.timeout = 25
          self.gconf.set_int("/apps/gpomo/timeout",self.timeout)
+
+      self.interval   = self.gconf.get_int("/apps/gpomo/interval")
+      if self.interval<1:
+         self.interval = 5
+         self.gconf.set_int("/apps/gpomo/interval",self.interval)
+
+      self.longer   = self.gconf.get_int("/apps/gpomo/longer")
+      if self.longer<1:
+         self.longer = 20
+         self.gconf.set_int("/apps/gpomo/longer",self.longer)
 
       self.menu = gtk.Menu()
 
@@ -176,24 +188,7 @@ class Gpomo:
       self.about.destroy()
 
    def config(self, widget, data = None):
-      minuteStr   = gtk.Label(_("Timeout"))
-      minuteTxt   = gtk.Entry()
-      minuteTxt.set_text(str(self.timeout))
-
-      dialog      = gtk.Dialog(_("Configuration"),None,gtk.DIALOG_MODAL,(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
-      dialog.vbox.pack_start(minuteStr)
-      dialog.vbox.pack_start(minuteTxt)
-
-      minuteStr.show()
-      minuteTxt.show()
-      response    = dialog.run()
-      dialog.destroy()
-
-      if response==gtk.RESPONSE_REJECT:
-         return
-
-      self.timeout = int(minuteTxt.get_text())
-      self.gconf.set_int("/apps/gpomo/timeout",self.timeout)
+      dialog = ConfigWindow(self)
 
    def quit(self,widget,data=None):
       if self.thread!=None:
