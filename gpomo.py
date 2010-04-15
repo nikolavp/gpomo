@@ -20,6 +20,7 @@ import datetime
 import threading
 
 from pomo_thread import *
+from lock_thread import *
 from configwindow import *
 
 pygtk.require('2.0')
@@ -138,6 +139,10 @@ class Gpomo:
       data.popup(None, None, gtk.status_icon_position_menu, button, time, self.statusIcon)
 
    def left_click(self,widget,data):
+      if self.locked:
+         self.show_error(_("Locked! You don't want to start another pomodoro before your break ends, right?"))
+         return
+
       if self.completed:
          self.default_state()
          self.completed = False
@@ -180,22 +185,33 @@ class Gpomo:
       self.default_state()
       self.thread = None
 
-   def complete_pomodoro(self):
-      self.thread = None
-      if self.canceled==False:
-         self.completed = True
-         self.completes += 1
-         need_a_long_break = (self.completed % 4)==0
+   def lock(self,lock):
+      if lock:
+         self.locked = True
+         need_a_long_break = (self.completes % 4)==0
 
          if need_a_long_break:
             msg = _("Pomodoro completed, 4 in a row!\nTake a %d minutes break now, you deserve it.") % self.longer
          else:
             msg = _("Pomodoro completed!\nTake a %d minutes break now.") % self.interval
 
-         self.statusIcon.set_from_file(self.get_icon("red.png"))
-         self.blinking(True)
+         lock = LockThread(self,self.longer if need_a_long_break else self.interval)
+         lock.start()
+
+         self.statusIcon.set_from_file(self.get_icon("locked.png"))
+         self.blinking(False)
          self.set_tooltip(msg)
          self.show_info(msg)
+      else:
+         self.locked = False
+         self.default_state()
+
+   def complete_pomodoro(self):
+      self.thread = None
+      if self.canceled==False:
+         self.completed = True
+         self.completes += 1
+         self.lock(True)
       else:
          self.default_state()
 
@@ -205,8 +221,23 @@ class Gpomo:
    def blinking(self,blink):
       self.statusIcon.set_blinking(blink)
 
+   def update_lock(self,timeout,sec):
+      minutes  = timeout-(sec/60)
+      seconds  = (timeout*60)-sec
+      if minutes>1:
+         self.set_tooltip(_("%d minute(s) to complete your break") % (minutes))
+      else:
+         self.set_tooltip(_("%d second(s) to complete your break") % (seconds))
+
    def update_time(self,sec):
-      self.set_tooltip(_("%d minute(s) to complete pomodoro, click to cancel") % (self.timeout-(sec/60)))
+      minutes  = self.timeout-(sec/60)
+      seconds  = (self.timeout*60)-sec
+      if minutes>1:
+         self.set_tooltip(_("%d minute(s) to complete pomodoro, click to cancel") % (minutes))
+      else:
+         self.blinking(True)
+         self.set_tooltip(_("%d second(s) to complete pomodoro") % (seconds))
+
       slice = (self.timeout/3.0)*60
       if sec<slice:
          self.statusIcon.set_from_file(self.get_icon("green.png"))
@@ -214,10 +245,6 @@ class Gpomo:
          self.statusIcon.set_from_file(self.get_icon("orange.png"))
       elif sec<=(slice*2):
          self.statusIcon.set_from_file(self.get_icon("red.png"))
-
-      if sec>=(slice*2)+(slice/2) and not self.statusIcon.get_blinking():
-           self.statusIcon.set_blinking(True)
-           self.set_tooltip(_("Few seconds to complete pomodoro"))
 
    def about(self,widget,data=None):
       self.about = gtk.AboutDialog()
