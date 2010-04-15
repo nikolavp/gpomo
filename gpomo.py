@@ -16,6 +16,7 @@ import pygtk
 import gconf
 import locale
 import gettext
+import datetime
 import threading
 
 from pomo_thread import *
@@ -53,6 +54,7 @@ class Gpomo:
       self.longbreaks= 0
       self.canceleds = 0
       self.canceled  = False
+      self.started   = datetime.datetime.now()
 
       self.timeout   = self.gconf.get_int("/apps/gpomo/timeout")
       if self.timeout<1:
@@ -116,7 +118,7 @@ class Gpomo:
       return "%d pomodoro(s) completed\n%d pomodoro(s) canceled\n%d breaks\n%d long breaks" % (self.completes,self.canceleds,self.breaks,self.longbreaks)
 
    def stats(self,widget,data):
-      self.show_info("About this session\n\n%s" % self.stats_str())
+      self.show_info("About this session\n\nStarted on %s\n\n%s" % (self.started.strftime("%m/%d/%Y %H:%M:%S"),self.stats_str()))
 
    def show_error(self,msg):
       self.show_dialog(gtk.MESSAGE_ERROR,msg)
