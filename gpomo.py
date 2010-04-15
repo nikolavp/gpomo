@@ -125,7 +125,7 @@ class Gpomo:
          else:
             self.thread.stop()
 
-      self.thread = PomoThread(self)
+      self.thread = PomoThread(self,self.timeout)
       self.thread.start()
 
    def complete_pomodoro(self):
@@ -139,7 +139,7 @@ class Gpomo:
       self.statusIcon.set_blinking(blink)
 
    def update_time(self,sec):
-      self.set_tooltip(_("%d minute(s) to complete") % (self.timeout-(sec/60)))
+      self.set_tooltip(_("%d minute(s) to complete pomodoro") % (self.timeout-(sec/60)))
       slice = (self.timeout/3.0)*60
       if sec<slice:
          self.statusIcon.set_from_file(self.get_icon("green.png"))
