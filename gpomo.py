@@ -118,6 +118,7 @@ class Gpomo:
          mod = __import__(manager)
          cls = getattr(mod,manager.capitalize())
          self.managers.append(cls())
+         print "Loaded %s task manager" % manager.capitalize()
          self.set_tooltip(_("%s task manager loaded") % manager.capitalize())
 
    def set_tooltip(self,text):
@@ -210,7 +211,8 @@ class Gpomo:
 
       if len(tasks)>0:
          response = self.ask(_("Do you want to associate your pomodoro to a task?"))
-         self.choose_task(tasks)
+         if response==gtk.RESPONSE_YES:
+            self.choose_task(tasks)
 
       self.completed = False
       self.canceled  = False
