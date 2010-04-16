@@ -141,10 +141,10 @@ class Gpomo:
       return None         
 
    def stats_str(self):
-      return "%d pomodoro(s) completed\n%d pomodoro(s) canceled\n%d breaks\n%d long breaks" % (self.completes,self.canceleds,self.breaks,self.longbreaks)
+      return _("%d pomodoro(s) completed\n%d pomodoro(s) canceled\n%d breaks\n%d long breaks") % (self.completes,self.canceleds,self.breaks,self.longbreaks)
 
    def stats(self,widget,data):
-      self.show_info("About this session\n\nStarted on %s\n\n%s" % (self.started.strftime("%m/%d/%Y %H:%M:%S"),self.stats_str()))
+      self.show_info(_("About this session\n\nStarted on %s\n\n%s") % (self.started.strftime(_("%m/%d/%Y %H:%M:%S")),self.stats_str()))
 
    def show_error(self,msg):
       self.show_dialog(gtk.MESSAGE_ERROR,msg)

@@ -1,0 +1,147 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-16 19:43-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: configwindow.py:10
+msgid "Gpomo configuration"
+msgstr ""
+
+#: configwindow.py:18
+msgid "Timeout"
+msgstr ""
+
+#: configwindow.py:22
+msgid "Interval"
+msgstr ""
+
+#: configwindow.py:26
+msgid "Longer interval"
+msgstr ""
+
+#: configwindow.py:30
+msgid "Ok"
+msgstr ""
+
+#: configwindow.py:33
+msgid "Cancel"
+msgstr ""
+
+#: gpomo.py:87
+msgid "Configuration"
+msgstr ""
+
+#: gpomo.py:91
+msgid "Statistics"
+msgstr ""
+
+#: gpomo.py:95
+msgid "About"
+msgstr ""
+
+#: gpomo.py:99
+msgid "Quit"
+msgstr ""
+
+#: gpomo.py:131
+#, python-format
+msgid "%s task manager loaded"
+msgstr ""
+
+#: gpomo.py:163
+msgid ""
+"Locked! Sorry, you can't cheat and restart this app. Go take your break."
+msgstr ""
+
+#: gpomo.py:171
+msgid ""
+"Locked! You don't want to start another pomodoro before your break ends, "
+"right?"
+msgstr ""
+
+#: gpomo.py:180
+msgid "Are you sure you want to start a new pomodoro?"
+msgstr ""
+
+#: gpomo.py:188
+#, python-format
+msgid ""
+"Click to start a pomodoro\n"
+"%s"
+msgstr ""
+
+#: gpomo.py:198
+msgid "Select a task"
+msgstr ""
+
+#: gpomo.py:215
+msgid "Cancel current pomodoro?"
+msgstr ""
+
+#: gpomo.py:230
+msgid "Do you want to associate your pomodoro to a task?"
+msgstr ""
+
+#: gpomo.py:258
+#, python-format
+msgid ""
+"Pomodoro completed, 4 in a row!\n"
+"Take a %d minutes break now, you deserve it."
+msgstr ""
+
+#: gpomo.py:260
+#, python-format
+msgid ""
+"Pomodoro completed!\n"
+"Take a %d minutes break now."
+msgstr ""
+
+#: gpomo.py:278
+msgid "Time's up!"
+msgstr ""
+
+#: gpomo.py:287
+msgid "Pomodoro canceled!"
+msgstr ""
+
+#: gpomo.py:294
+msgid "Marking task as completed ..."
+msgstr ""
+
+#: gpomo.py:298
+#, python-format
+msgid "Task '%s' could not be marked as complete, please mark it manually."
+msgstr ""
+
+#: gpomo.py:314
+#, python-format
+msgid "%d minute(s) to complete your break"
+msgstr ""
+
+#: gpomo.py:316
+#, python-format
+msgid "%d second(s) to complete your break"
+msgstr ""
+
+#: gpomo.py:322
+#, python-format
+msgid "%d minute(s) to complete pomodoro, click to cancel"
+msgstr ""
+
+#: gpomo.py:325
+#, python-format
+msgid "%d second(s) to complete pomodoro"
+msgstr ""

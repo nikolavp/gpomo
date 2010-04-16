@@ -15,16 +15,25 @@ class Gmilk:
          self.server = None
 
    def task_count(self):
-      if self.server==None:
+      try:
+         if self.server==None:
+            return -1
+         return self.server.task_count()
+      except:
          return -1
-      return self.server.task_count()
 
    def get_task(self,i):
-      if self.server==None:
-         return -1
-      return self.server.get_task(i)
+      try:
+         if self.server==None:
+            return -1
+         return self.server.get_task(i)
+      except:
+         return None
 
    def complete_task(self,id):
-      if self.server==None:
-         return -1
-      return self.server.complete_task(id,True)>0
+      try:
+         if self.server==None:
+            return -1
+         return self.server.complete_task(id,True)>0
+      except:
+         return None
