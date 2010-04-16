@@ -180,7 +180,17 @@ class Gpomo:
       return rsp
 
    def choose_task(self,tasks):
-      self.task = tasks[0]
+      self.task   = tasks[0]
+      dialog      = gtk.Dialog(_("Select a task"),None,gtk.DIALOG_MODAL,(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+      combobox    = gtk.combo_box_new_text()
+
+      for task in tasks:
+         combobox.append_text(task[2])
+
+      dialog.vbox.pack_start(combobox)
+      dialog.show_all()
+      response    = dialog.run()
+      dialog.destroy()
 
    def start_pomodoro(self):
       if self.thread!=None:
