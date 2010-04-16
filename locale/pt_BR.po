@@ -132,6 +132,14 @@ msgstr "Pomodoro completo!\n"
 msgid "Time's up!"
 msgstr "O tempo acabou!"
 
+#: gpomo.py:278
+msgid "Complete"
+msgstr "Completar"
+
+#: gpomo.py:279
+msgid "Time's up! Now you need to tell\nif your pomodoro is complete or\nif you want to cancel it."
+msgstr "O tempo acabou! Agora você precisa\ndizer se o seu pomodoro está completo\nou se você deseja cancelá-lo."
+
 #: gpomo.py:287
 msgid "Pomodoro canceled!"
 msgstr "Pomodoro cancelado!"

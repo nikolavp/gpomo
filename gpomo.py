@@ -275,8 +275,8 @@ class Gpomo:
       if self.canceled==False:
          image    = gtk.Image()
          image.set_from_file(self.get_icon("red.png"))
-         dialog   = gtk.Dialog(_("Time's up!"),None,gtk.DIALOG_MODAL,("Complete",gtk.RESPONSE_OK,"Cancel",gtk.RESPONSE_CANCEL))
-         label    = gtk.Label("Time's up! Now you need to tell\nif your pomodoro is complete or\nif you want to cancel it.")
+         dialog   = gtk.Dialog(_("Time's up!"),None,gtk.DIALOG_MODAL,(_("Complete"),gtk.RESPONSE_OK,_("Cancel"),gtk.RESPONSE_CANCEL))
+         label    = gtk.Label(_("Time's up! Now you need to tell\nif your pomodoro is complete or\nif you want to cancel it."))
          dialog.vbox.pack_start(label,padding=10,expand=True,fill=True)
          dialog.vbox.pack_end(image,padding=10)
          dialog.show_all()
