@@ -1,7 +1,8 @@
 APP=gpomo
 BIN=/usr/bin/gpomo
-BASE=/usr/local/share/$(APP)
+BASE=/usr/share/pyshared/$(APP)
 LIB=$(BASE)/lib/
+MANAGERS=$(BASE)/lib/managers/
 IMAGES=$(BASE)/images/
 LOCALE=/usr/share
 MO_INSTALL=$(shell find -iname '*.mo' -exec sh -c "dirname {} | cut -b2-" \;)
@@ -9,8 +10,10 @@ MO_REMOVE=$(shell find $(LOCALE)/locale/ -iname '$(APP).mo')
 
 install:
 	mkdir -p $(LIB)
+	mkdir -p $(MANAGERS)
 	mkdir -p $(IMAGES)
 	cp *.py $(LIB)
+	cp managers/*.py $(MANAGERS)
 	rm -f $(BIN)
 	ln -s $(LIB)/gpomo.py $(BIN) 
 	cp images/* $(IMAGES)
@@ -20,6 +23,8 @@ install:
 	done
 
 uninstall:
+	rm -f $(MANAGERS)/*
+	rmdir $(MANAGERS)
 	rm -f $(BIN)
 	rm -f $(LIB)/*
 	rm -f $(IMAGES)/*
