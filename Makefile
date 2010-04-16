@@ -13,7 +13,7 @@ install:
 	mkdir -p $(MANAGERS)
 	mkdir -p $(IMAGES)
 	cp *.py $(LIB)
-	cp managers/*.py $(MANAGERS)
+	cp lib/managers/*.py $(MANAGERS)
 	rm -f $(BIN)
 	ln -s $(LIB)/gpomo.py $(BIN) 
 	cp images/* $(IMAGES)
