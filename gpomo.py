@@ -159,6 +159,10 @@ class Gpomo:
       dialog.destroy()
 
    def right_click(self, widget, button, time, data = None):
+      if self.locked:
+         self.show_error(_("Locked! Sorry, you can't cheat and restart this app. Go take your break."))
+         return
+
       data.show_all()
       data.popup(None, None, gtk.status_icon_position_menu, button, time, self.statusIcon)
 
@@ -200,10 +204,11 @@ class Gpomo:
       dialog.vbox.pack_start(combobox)
       dialog.show_all()
       response = dialog.run()
+      select   = combobox.get_active()
       dialog.destroy()
 
-      if(response==gtk.RESPONSE_ACCEPT):
-         self.task = None 
+      if(response==gtk.RESPONSE_ACCEPT and select>=0):
+         self.task = tasks[select]
 
    def start_pomodoro(self):
       if self.thread!=None:
@@ -266,12 +271,19 @@ class Gpomo:
       if self.canceled==False:
          self.completed = True
          self.completes += 1
+         if self.task!=None:
+            self.set_tooltip(_("Marking task as completed ..."))
+            manager, id, name = self.task
+            rsp = manager.complete_task(id)
+            if not rsp:
+               show_error(_("Task '%s' could not be marked as complete, please mark it manually."))
          self.lock(True)
       else:
          self.default_state()
 
       self.completed = True
       self.canceled  = False
+      self.task      = None
 
    def blinking(self,blink):
       self.statusIcon.set_blinking(blink)

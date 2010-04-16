@@ -27,4 +27,4 @@ class Gmilk:
    def complete_task(self,id):
       if self.server==None:
          return -1
-      return self.server.complete_task(id)>0
+      return self.server.complete_task(id,True)>0
