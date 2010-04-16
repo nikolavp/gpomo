@@ -110,15 +110,24 @@ class Gpomo:
 
       gtk.main()
 
+   def get_managers_path(self):
+      for base in DATA_DIRS:
+         path = os.path.join(base,"lib","managers")
+         if os.path.exists(path):
+            return path
+      return None         
+
    def init_managers(self):
       self.managers = []
-      sys.path.append("./managers")
-      list = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob("managers/*.py")]
+      path = self.get_managers_path()
+      if path==None:
+         return
+      sys.path.append(path)
+      list = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob(os.path.join(path,"*.py"))]
       for manager in list:
          mod = __import__(manager)
          cls = getattr(mod,manager.capitalize())
          self.managers.append(cls())
-         print "Loaded %s task manager" % manager.capitalize()
          self.set_tooltip(_("%s task manager loaded") % manager.capitalize())
 
    def set_tooltip(self,text):
