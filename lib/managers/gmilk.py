@@ -6,34 +6,53 @@ except:
 
 class Gmilk:
    def __init__(self):
+      self.init_server()
+
+   def init_server(self):
+      self.reset_server()
       try:
          if gmilk_dbus_enabled:
             self.bus      = dbus.SessionBus()
             self.server   = dbus.Interface(self.bus.get_object('com.Gmilk', '/'),'com.Gmilk.Interface')
-      except:            
-         self.bus    = None
-         self.server = None
+            return True
+      except Exception as exc:            
+         print "Error initializing Gmilk Dbus client: %s %s" % (exc,self.server)
+         self.reset_server()
+      return False
+
+   def reset_server(self):
+      self.bus    = None
+      self.server = None
 
    def task_count(self):
       try:
          if self.server==None:
-            return -1
+            if not self.init_server():
+               return -1
          return self.server.task_count()
-      except:
+      except Exception as exc:
+         print "Error getting the task count on Gmilk Dbus client: %s %s" % (exc,self.server)
+         self.reset_server()
          return -1
 
    def get_task(self,i):
       try:
          if self.server==None:
-            return -1
+            if not self.init_server():
+               return -1
          return self.server.get_task(i)
-      except:
+      except Exception as exc:
+         print "Error returning task from Gmilk Dbus client: %s %s" % (exc,self.server)
+         self.reset_server()
          return None
 
    def complete_task(self,id):
       try:
          if self.server==None:
-            return -1
+            if not self.init_server():
+               return -1
          return self.server.complete_task(id,True)>0
       except:
+         print "Error completing task on Gmilk Dbus client: %s %s" % (exc,self.server)
+         self.reset_server()
          return None
