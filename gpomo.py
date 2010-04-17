@@ -243,9 +243,8 @@ class Gpomo:
 
       if self.thread!=None:
          self.thread.stop()
-      else:
-         self.thread = None
 
+      self.thread = None
       self.default_state()
       self.task   = None
 
