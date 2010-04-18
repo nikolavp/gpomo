@@ -46,13 +46,16 @@ class Gmilk:
          self.reset_server()
          return None
 
+   def start_task(self,id):
+      pass
+
    def complete_task(self,id):
       try:
          if self.server==None:
             if not self.init_server():
                return -1
          return self.server.complete_task(id,True)>0
-      except:
-         print "Error completing task on Gmilk Dbus client: %s %s" % (exc,self.server)
+      except Exception as exc:
+         print "Error completing task with id %s on Gmilk Dbus client: %s %s" % (id,exc,self.server)
          self.reset_server()
          return None

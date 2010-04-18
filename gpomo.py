@@ -230,6 +230,9 @@ class Gpomo:
          response = self.ask(_("Do you want to associate your pomodoro to a task?"))
          if response==gtk.RESPONSE_YES:
             self.choose_task(tasks)
+            if self.task!=None:
+               manager, id, name = self.task
+               rsp = manager.start_task(id)
 
       self.completed = False
       self.canceled  = False
@@ -294,7 +297,7 @@ class Gpomo:
             manager, id, name = self.task
             rsp = manager.complete_task(id)
             if not rsp:
-               show_error(_("Task '%s' could not be marked as complete, please mark it manually."))
+               self.show_error(_("Task '%s' could not be marked as complete, please mark it manually.") % name)
          self.lock(True)
       else:
          self.default_state()
