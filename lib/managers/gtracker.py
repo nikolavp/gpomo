@@ -46,7 +46,7 @@ class Gtracker:
          id, proj, name, points, task_id, task_name = self.server.get_story(i)
          id          = str(int(task_id)*-1) if len(task_name)>0 else id
          task_desc   = (" - %s %s" % (_("Task"),task_name)) if len(task_name)>0 else ""
-         return [id,proj+": "+name+task_desc,None]
+         return [id,proj+": "+name+task_desc,None,points]
       except Exception as exc:
          print "Error returning task from Gtracker Dbus client: %s %s" % (exc,self.server)
          self.reset_server()

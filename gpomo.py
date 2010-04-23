@@ -59,6 +59,7 @@ class Gpomo:
       self.locked    = False
       self.started   = datetime.datetime.now()
       self.task      = None
+      self.task_pnt  = {}
 
       self.timeout   = self.gconf.get_int("/apps/gpomo/timeout")
       if self.timeout<1:
@@ -74,6 +75,8 @@ class Gpomo:
       if self.longer<1:
          self.longer = 20
          self.gconf.set_int("/apps/gpomo/longer",self.longer)
+
+      self.connect_points = self.gconf.get_bool("/apps/gpomo/connect_points")
 
       self.menu = gtk.Menu()
 
@@ -223,16 +226,23 @@ class Gpomo:
       for manager in self.managers:
          count = manager.task_count()
          for i in range(0,count):
-            id, name, due = manager.get_task(i)
-            tasks.append([manager,id,name])
+            id, name, due, points = manager.get_task(i)
+            tasks.append([manager,id,name,due,points])
 
       if len(tasks)>0:
          response = self.ask(_("Do you want to associate your pomodoro to a task?"))
          if response==gtk.RESPONSE_YES:
             self.choose_task(tasks)
             if self.task!=None:
-               manager, id, name = self.task
-               rsp = manager.start_task(id)
+               manager, id, name, due, points = self.task
+
+               if self.connect_points:
+                  if points!=None and int(points)>0:
+                     if id not in self.task_pnt:
+                        self.task_pnt[id] = int(points)
+                        rsp = manager.start_task(id)
+               else:
+                  rsp = manager.start_task(id)
 
       self.completed = False
       self.canceled  = False
@@ -293,11 +303,23 @@ class Gpomo:
          self.completed = True
          self.completes += 1
          if self.task!=None:
-            self.set_tooltip(_("Marking task as completed ..."))
-            manager, id, name = self.task
-            rsp = manager.complete_task(id)
-            if not rsp:
-               self.show_error(_("Task '%s' could not be marked as complete, please mark it manually.") % name)
+            manager, id, name, due, points = self.task
+            comp = True
+
+            if self.connect_points:
+               if id in self.task_pnt:
+                  points = self.task_pnt[id]
+                  self.task_pnt[id] -= 1
+                  if self.task_pnt[id]>0:
+                     self.show_info(_("More %d pomodoro(s) till complete task") % self.task_pnt[id])
+                     comp = False
+
+            if comp:
+               self.set_tooltip(_("Marking task as completed ..."))
+               rsp = manager.complete_task(id)
+               if not rsp:
+                  self.show_error(_("Task '%s' could not be marked as complete, please mark it manually.") % name)
+
          self.lock(True)
       else:
          self.default_state()

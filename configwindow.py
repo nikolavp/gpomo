@@ -27,6 +27,9 @@ class ConfigWindow(gtk.Window):
       self.longerTxt    = gtk.Entry()
       self.longerTxt.set_text(str(self.manager.longer))
 
+      self.connectPoints = gtk.CheckButton(_("Connect each pomodoro to story points"))
+      self.connectPoints.set_active(self.manager.connect_points)
+
       self.ok  = gtk.Button(_("Ok"))
       self.ok.connect("clicked",self.save)
 
@@ -41,6 +44,8 @@ class ConfigWindow(gtk.Window):
 
       table.attach(longerStr,0,1,2,3)
       table.attach(self.longerTxt,1,2,2,3)
+
+      table.attach(self.connectPoints,0,2,3,4)
 
       table.attach(self.ok,0,1,4,5)
       table.attach(self.cancel,1,2,4,5)
@@ -60,6 +65,10 @@ class ConfigWindow(gtk.Window):
       longer = int(self.longerTxt.get_text())
       self.manager.gconf.set_int("/apps/gpomo/longer",longer)
       self.manager.longer = longer
+
+      connect = self.connectPoints.get_active()
+      self.manager.gconf.set_bool("/apps/gpomo/connect_points",connect)
+      self.manager.connect_points = connect
 
       self.destroy()
 

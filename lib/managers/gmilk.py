@@ -40,7 +40,9 @@ class Gmilk:
          if self.server==None:
             if not self.init_server():
                return -1
-         return self.server.get_task(i)
+         task = list(self.server.get_task(i))
+         task.append(-1) # dont have any points associated
+         return tuple(task)
       except Exception as exc:
          print "Error returning task from Gmilk Dbus client: %s %s" % (exc,self.server)
          self.reset_server()
