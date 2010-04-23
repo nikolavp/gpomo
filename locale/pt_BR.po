@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-04-22 22:25-0300\n"
+"POT-Creation-Date: 2010-04-23 17:31-0300\n"
 "PO-Revision-Date: 2010-04-16 19:28-0300\n"
 "Last-Translator: Eustaquio Rangel <eustaquiorangel@gmail.com>\n"
 "Language-Team: Brazilian Portuguese\n"
@@ -17,28 +17,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: gpomo.py:87
+#: gpomo.py:90
 msgid "Configuration"
 msgstr "Configuração"
 
-#: gpomo.py:91
+#: gpomo.py:94
 msgid "Statistics"
 msgstr "Estatísticas"
 
-#: gpomo.py:95
+#: gpomo.py:98
 msgid "About"
 msgstr "Sobre"
 
-#: gpomo.py:99
+#: gpomo.py:102
 msgid "Quit"
 msgstr "Sair"
 
-#: gpomo.py:131
+#: gpomo.py:134
 #, python-format
 msgid "%s task manager loaded"
 msgstr "Gerenciador de tarefas %s carregado"
 
-#: gpomo.py:144
+#: gpomo.py:147
 #, python-format
 msgid ""
 "%(comp)d pomodoro(s) completed\n"
@@ -51,7 +51,7 @@ msgstr ""
 "%(breaks)d pausas\n"
 "%(longbreaks)d pausas longas"
 
-#: gpomo.py:147
+#: gpomo.py:150
 #, python-format
 msgid ""
 "About this session\n"
@@ -66,18 +66,18 @@ msgstr ""
 "\n"
 "%(str)s"
 
-#: gpomo.py:147
+#: gpomo.py:150
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%d/%m/%Y %H:%M:%S"
 
-#: gpomo.py:163
+#: gpomo.py:166
 msgid ""
 "Locked! Sorry, you can't cheat and restart this app. Go take your break."
 msgstr ""
 "Bloqueado! Desculpe, você não pode trapacear e reiniciar esse programa. "
 "Volte para o seu intervalo."
 
-#: gpomo.py:171
+#: gpomo.py:174
 msgid ""
 "Locked! You don't want to start another pomodoro before your break ends, "
 "right?"
@@ -85,11 +85,11 @@ msgstr ""
 "Bloqueado! Você não quer começar outro pomodoro antes que o seu intervalo "
 "termine, certo?"
 
-#: gpomo.py:180
+#: gpomo.py:183
 msgid "Are you sure you want to start a new pomodoro?"
 msgstr "Tem certeza que deseja começar um pomodoro novo?"
 
-#: gpomo.py:188
+#: gpomo.py:191
 #, python-format
 msgid ""
 "Click to start a pomodoro\n"
@@ -98,19 +98,19 @@ msgstr ""
 "Clique para começar um pomodoro\n"
 "%s"
 
-#: gpomo.py:198
+#: gpomo.py:201
 msgid "Select a task"
 msgstr "Selecione uma tarefa"
 
-#: gpomo.py:215
+#: gpomo.py:218
 msgid "Cancel current pomodoro?"
 msgstr "Cancela o pomodoro atual?"
 
-#: gpomo.py:230
+#: gpomo.py:233
 msgid "Do you want to associate your pomodoro to a task?"
 msgstr "Você deseja associar seu pomodoro à uma tarefa?"
 
-#: gpomo.py:260
+#: gpomo.py:270
 #, python-format
 msgid ""
 "Pomodoro completed, 4 in a row!\n"
@@ -119,7 +119,7 @@ msgstr ""
 "Pomodoro completo, 4 em seguida!\n"
 "Tire um intervalo de %d minutoos agora, você merece."
 
-#: gpomo.py:262
+#: gpomo.py:272
 #, python-format
 msgid ""
 "Pomodoro completed!\n"
@@ -128,19 +128,19 @@ msgstr ""
 "Pomodoro completo!\n"
 "Tire um intervalo de %d minutos agora."
 
-#: gpomo.py:280
+#: gpomo.py:290
 msgid "Time's up!"
 msgstr "O tempo acabou!"
 
-#: gpomo.py:280
+#: gpomo.py:290
 msgid "Complete"
 msgstr "Completar"
 
-#: gpomo.py:280 configwindow.py:33
+#: gpomo.py:290 configwindow.py:36
 msgid "Cancel"
 msgstr "Cancela"
 
-#: gpomo.py:281
+#: gpomo.py:291
 msgid ""
 "Time's up! Now you need to tell\n"
 "if your pomodoro is complete or\n"
@@ -150,37 +150,42 @@ msgstr ""
 "dizer se o seu pomodoro está completo\n"
 "ou se você deseja cancelá-lo."
 
-#: gpomo.py:289
+#: gpomo.py:299
 msgid "Pomodoro canceled!"
 msgstr "Pomodoro cancelado!"
 
-#: gpomo.py:296
+#: gpomo.py:314
+#, fuzzy, python-format
+msgid "More %d pomodoro(s) till complete task"
+msgstr "Mais %d pomodoros(s) até completar a tarefa"
+
+#: gpomo.py:318
 msgid "Marking task as completed ..."
 msgstr "Marcando tarefa como completa ..."
 
-#: gpomo.py:300
+#: gpomo.py:321
 #, python-format
 msgid "Task '%s' could not be marked as complete, please mark it manually."
 msgstr ""
 "A tarefa '%s' não pode ser marcada como completa, por favor marque "
 "manualmente."
 
-#: gpomo.py:316
+#: gpomo.py:338
 #, python-format
 msgid "%d minute(s) to complete your break"
 msgstr "%d minuto(s) para completar seu intervalo"
 
-#: gpomo.py:318
+#: gpomo.py:340
 #, python-format
 msgid "%d second(s) to complete your break"
 msgstr "%d segundo(s) para completar seu intervalo"
 
-#: gpomo.py:324
+#: gpomo.py:346
 #, python-format
 msgid "%d minute(s) to complete pomodoro, click to cancel"
 msgstr "%d minuto(s) para completar o pomodoro, clique para cancelar"
 
-#: gpomo.py:327
+#: gpomo.py:349
 #, python-format
 msgid "%d second(s) to complete pomodoro"
 msgstr "%d segundo(s) para completar o pomodoro"
@@ -206,5 +211,9 @@ msgid "Longer interval"
 msgstr "Intervalo longo"
 
 #: configwindow.py:30
+msgid "Connect each pomodoro to story points"
+msgstr "Conectar cada pomodoro com pontos da história"
+
+#: configwindow.py:33
 msgid "Ok"
 msgstr "Ok"
