@@ -14,6 +14,8 @@ import gtk
 import glob
 import gobject
 import pygtk
+import pygst
+import gst
 import gconf
 import locale
 import gettext
@@ -60,6 +62,12 @@ class Gpomo:
       self.started   = datetime.datetime.now()
       self.task      = None
       self.task_pnt  = {}
+
+      self.player = gst.element_factory_make("playbin2", "player")
+      fakesink = gst.element_factory_make("fakesink", "fakesink")
+      self.player.set_property("video-sink", fakesink)
+      bus = self.player.get_bus()
+      bus.add_signal_watch()
 
       self.timeout   = self.gconf.get_int("/apps/gpomo/timeout")
       if self.timeout<1:
@@ -289,6 +297,11 @@ class Gpomo:
          image.set_from_file(self.get_icon("red.png"))
          dialog   = gtk.Dialog(_("Time's up!"),None,gtk.DIALOG_MODAL,(_("Complete"),gtk.RESPONSE_OK,_("Cancel"),gtk.RESPONSE_CANCEL))
          label    = gtk.Label(_("Time's up! Now you need to tell\nif your pomodoro is complete or\nif you want to cancel it."))
+
+         filepath = "/usr/share/sounds/gnome/default/alerts/glass.ogg"
+         self.player.set_property("uri", "file://" + filepath)
+         self.player.set_state(gst.STATE_PLAYING)
+
          dialog.vbox.pack_start(label,padding=10,expand=True,fill=True)
          dialog.vbox.pack_end(image,padding=10)
          dialog.show_all()
