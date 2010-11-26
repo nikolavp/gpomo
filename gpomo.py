@@ -276,8 +276,10 @@ class Gpomo:
 
          if need_a_long_break:
             msg = _("Pomodoro completed, 4 in a row!\nTake a %d minutes break now, you deserve it.") % self.longer
+            self.longbreaks += 1
          else:
             msg = _("Pomodoro completed!\nTake a %d minutes break now.") % self.interval
+            self.breaks += 1
 
          lock = LockThread(self,self.longer if need_a_long_break else self.interval)
          lock.start()
