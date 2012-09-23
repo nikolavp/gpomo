@@ -40,14 +40,15 @@ try:
 except:
     dbus_enabled = 0
 
-BASE_DIRS = [os.path.join(os.path.expanduser("~"), ".local", "share"),"/usr/share/pyshared","/usr/local/share", "/usr/share"]
-DATA_DIRS = [os.path.abspath(sys.path[0])] + [os.path.join(d,__appname__.lower()) for d in BASE_DIRS]
+BASE_DIRS = [os.path.join(os.path.expanduser("~"), ".local", "share"), "/usr/share/pyshared", "/usr/local/share", "/usr/share"]
+DATA_DIRS = [os.path.abspath(sys.path[0])] + [os.path.join(d, __appname__.lower()) for d in BASE_DIRS]
 
 gettext.bindtextdomain(__appname__.lower())
 gettext.textdomain(__appname__.lower())
 _ = gettext.gettext
 
 gobject.threads_init()
+
 
 class Gpomo:
 
@@ -72,17 +73,17 @@ class Gpomo:
         self.timeout   = self.gconf.get_int("/apps/gpomo/timeout")
         if self.timeout<1:
             self.timeout = 25
-            self.gconf.set_int("/apps/gpomo/timeout",self.timeout)
+            self.gconf.set_int("/apps/gpomo/timeout", self.timeout)
 
         self.interval   = self.gconf.get_int("/apps/gpomo/interval")
         if self.interval<1:
             self.interval = 5
-            self.gconf.set_int("/apps/gpomo/interval",self.interval)
+            self.gconf.set_int("/apps/gpomo/interval", self.interval)
 
         self.longer   = self.gconf.get_int("/apps/gpomo/longer")
         if self.longer<1:
             self.longer = 20
-            self.gconf.set_int("/apps/gpomo/longer",self.longer)
+            self.gconf.set_int("/apps/gpomo/longer", self.longer)
 
         self.connect_points = self.gconf.get_bool("/apps/gpomo/connect_points")
 
@@ -123,7 +124,7 @@ class Gpomo:
 
     def get_managers_path(self):
         for base in DATA_DIRS:
-            path = os.path.join(base,"lib","managers")
+            path = os.path.join(base, "lib", "managers")
             if os.path.exists(path):
                 return path
         return None
@@ -134,37 +135,37 @@ class Gpomo:
         if path==None:
             return
         sys.path.append(path)
-        list = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob(os.path.join(path,"*.py"))]
+        list = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob(os.path.join(path, "*.py"))]
         for manager in list:
             mod = __import__(manager)
-            cls = getattr(mod,manager.capitalize())
+            cls = getattr(mod, manager.capitalize())
             self.managers.append(cls())
             self.set_tooltip(_("%s task manager loaded") % manager.capitalize())
 
-    def set_tooltip(self,text):
+    def set_tooltip(self, text):
         self.statusIcon.set_tooltip(text)
 
-    def get_icon(self,icon):
+    def get_icon(self, icon):
         for base in DATA_DIRS:
-            path = os.path.join(base,"images",icon)
+            path = os.path.join(base, "images", icon)
             if os.path.exists(path):
                 return path
         return None
 
     def stats_str(self):
-        return _("%(comp)d pomodoro(s) completed\n%(canceled)d pomodoro(s) canceled\n%(breaks)d breaks\n%(longbreaks)d long breaks") % {"comp":self.completes,"canceled":self.canceleds,"breaks":self.breaks,"longbreaks":self.longbreaks}
+        return _("%(comp)d pomodoro(s) completed\n%(canceled)d pomodoro(s) canceled\n%(breaks)d breaks\n%(longbreaks)d long breaks") % {"comp":self.completes, "canceled":self.canceleds, "breaks":self.breaks, "longbreaks":self.longbreaks}
 
-    def stats(self,widget,data):
-        self.show_info(_("About this session\n\nStarted on %(start)s\n\n%(str)s") % {"start":self.started.strftime(_("%m/%d/%Y %H:%M:%S")),"str":self.stats_str()})
+    def stats(self, widget, data):
+        self.show_info(_("About this session\n\nStarted on %(start)s\n\n%(str)s") % {"start":self.started.strftime(_("%m/%d/%Y %H:%M:%S")), "str":self.stats_str()})
 
-    def show_error(self,msg):
-        self.show_dialog(gtk.MESSAGE_ERROR,msg)
+    def show_error(self, msg):
+        self.show_dialog(gtk.MESSAGE_ERROR, msg)
 
-    def show_info(self,msg):
-        self.show_dialog(gtk.MESSAGE_INFO,msg)
+    def show_info(self, msg):
+        self.show_dialog(gtk.MESSAGE_INFO, msg)
 
-    def show_dialog(self,msg_type,msg):
-        dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,msg_type,gtk.BUTTONS_OK,msg)
+    def show_dialog(self, msg_type, msg):
+        dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL, msg_type, gtk.BUTTONS_OK, msg)
         dialog.set_title(__appname__)
         dialog.run()
         dialog.destroy()
@@ -177,7 +178,7 @@ class Gpomo:
         data.show_all()
         data.popup(None, None, gtk.status_icon_position_menu, button, time, self.statusIcon)
 
-    def left_click(self,widget,data):
+    def left_click(self, widget, data):
         if self.locked:
             self.show_error(_("Locked! You don't want to start another pomodoro before your break ends, right?"))
             return
@@ -198,15 +199,15 @@ class Gpomo:
         self.statusIcon.set_from_file(self.get_icon("gray.png"))
         self.set_tooltip(_("Click to start a pomodoro\n%s") % self.stats_str())
 
-    def ask(self,msg):
-        dialog = gtk.MessageDialog(None,gtk.DIALOG_MODAL,gtk.MESSAGE_QUESTION,gtk.BUTTONS_YES_NO,msg)
+    def ask(self, msg):
+        dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO, msg)
         rsp = dialog.run()
         dialog.destroy()
         return rsp
 
-    def choose_task(self,tasks):
+    def choose_task(self, tasks):
         self.task   = None
-        dialog      = gtk.Dialog(_("Select a task"),None,gtk.DIALOG_MODAL,(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        dialog      = gtk.Dialog(_("Select a task"), None, gtk.DIALOG_MODAL,(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
         combobox    = gtk.combo_box_new_text()
 
         for task in tasks:
@@ -233,9 +234,9 @@ class Gpomo:
         tasks = []
         for manager in self.managers:
             count = manager.task_count()
-            for i in range(0,count):
+            for i in range(0, count):
                 id, name, due, points = manager.get_task(i)
-                tasks.append([manager,id,name,due,points])
+                tasks.append([manager, id, name, due, points])
 
         if len(tasks)>0:
             response = self.ask(_("Do you want to associate your pomodoro to a task?"))
@@ -254,7 +255,7 @@ class Gpomo:
 
         self.completed = False
         self.canceled  = False
-        self.thread    = PomoThread(self,self.timeout)
+        self.thread    = PomoThread(self, self.timeout)
         self.thread.start()
 
     def cancel_pomodoro(self):
@@ -269,7 +270,7 @@ class Gpomo:
         self.default_state()
         self.task   = None
 
-    def lock(self,lock):
+    def lock(self, lock):
         if lock:
             self.locked = True
             need_a_long_break = (self.completes % 4)==0
@@ -281,7 +282,7 @@ class Gpomo:
                 msg = _("Pomodoro completed!\nTake a %d minutes break now.") % self.interval
                 self.breaks += 1
 
-            lock = LockThread(self,self.longer if need_a_long_break else self.interval)
+            lock = LockThread(self, self.longer if need_a_long_break else self.interval)
             lock.start()
 
             self.statusIcon.set_from_file(self.get_icon("locked.png"))
@@ -297,15 +298,15 @@ class Gpomo:
         if self.canceled==False:
             image    = gtk.Image()
             image.set_from_file(self.get_icon("red.png"))
-            dialog   = gtk.Dialog(_("Time's up!"),None,gtk.DIALOG_MODAL,(_("Complete"),gtk.RESPONSE_OK,_("Cancel"),gtk.RESPONSE_CANCEL))
+            dialog   = gtk.Dialog(_("Time's up!"), None, gtk.DIALOG_MODAL,(_("Complete"), gtk.RESPONSE_OK, _("Cancel"), gtk.RESPONSE_CANCEL))
             label    = gtk.Label(_("Time's up! Now you need to tell\nif your pomodoro is complete or\nif you want to cancel it."))
 
             filepath = "/usr/share/sounds/gnome/default/alerts/glass.ogg"
             self.player.set_property("uri", "file://" + filepath)
             self.player.set_state(gst.STATE_PLAYING)
 
-            dialog.vbox.pack_start(label,padding=10,expand=True,fill=True)
-            dialog.vbox.pack_end(image,padding=10)
+            dialog.vbox.pack_start(label, padding=10, expand=True, fill=True)
+            dialog.vbox.pack_end(image, padding=10)
             dialog.show_all()
             resp = dialog.run()
             dialog.destroy()
@@ -343,10 +344,10 @@ class Gpomo:
         self.canceled  = False
         self.task      = None
 
-    def blinking(self,blink):
+    def blinking(self, blink):
         self.statusIcon.set_blinking(blink)
 
-    def update_lock(self,timeout,sec):
+    def update_lock(self, timeout, sec):
         minutes  = timeout-(sec/60)
         seconds  = (timeout*60)-sec
         if minutes>1:
@@ -354,7 +355,7 @@ class Gpomo:
         else:
             self.set_tooltip(_("%d second(s) to complete your break") % (seconds))
 
-    def update_time(self,sec):
+    def update_time(self, sec):
         minutes  = self.timeout-(sec/60)
         seconds  = (self.timeout*60)-sec
         if minutes>1:
@@ -371,7 +372,7 @@ class Gpomo:
         elif sec<=(slice*2):
             self.statusIcon.set_from_file(self.get_icon("red.png"))
 
-    def about(self,widget,data=None):
+    def about(self, widget, data=None):
         self.about = gtk.AboutDialog()
         self.about.set_name(__appname__)
         self.about.set_program_name(__appname__)
@@ -380,7 +381,7 @@ class Gpomo:
         self.about.set_license(__license__)
         self.about.set_website(__website__)
         self.about.set_website_label(__website__)
-        self.about.set_authors(["%s <%s>" % (__author__,__email__)])
+        self.about.set_authors(["%s <%s>" % (__author__, __email__)])
         self.about.set_logo(gtk.gdk.pixbuf_new_from_file(self.get_icon("red.png")))
         self.about.run()
         self.about.destroy()
@@ -388,7 +389,7 @@ class Gpomo:
     def config(self, widget, data = None):
         dialog = ConfigWindow(self)
 
-    def quit(self,widget,data=None):
+    def quit(self, widget, data=None):
         if self.thread!=None:
             self.thread.stop()
         gtk.main_quit()
