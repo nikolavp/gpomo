@@ -311,24 +311,38 @@ class Gpomo:
             resp = dialog.run()
             dialog.destroy()
 
-            if resp==gtk.RESPONSE_CANCEL:
+            if resp == gtk.RESPONSE_CANCEL:
                 self.show_error(_("Pomodoro canceled!"))
                 self.cancel_pomodoro()
                 return
 
             self.completed = True
             self.completes += 1
-            if self.task!=None:
+            if self.task != None:
                 manager, id, name, due, points = self.task
                 comp = True
 
                 if self.connect_points:
                     if id in self.task_pnt:
                         points = self.task_pnt[id]
-                        self.task_pnt[id] -= 1
-                        if self.task_pnt[id]>0:
-                            self.show_info(_("More %d pomodoro(s) till complete task") % self.task_pnt[id])
+
+                        image = gtk.Image()
+                        image.set_from_file(self.get_icon("red.png"))
+                        dialog = gtk.Dialog(_("Time's up!"), None, gtk.DIALOG_MODAL, (_("Yes"), gtk.RESPONSE_OK, _("No"), gtk.RESPONSE_CANCEL))
+                        label = gtk.Label(_("Have you finished your task?"))
+                        dialog.vbox.pack_start(label, padding=10, expand=True, fill=True)
+                        dialog.vbox.pack_end(image, padding=10)
+                        dialog.show_all()
+                        resp = dialog.run()
+                        dialog.destroy()
+
+                        if resp == gtk.RESPONSE_CANCEL:
                             comp = False
+                        else:
+                            self.task_pnt[id] -= 1
+                            if self.task_pnt[id] > 0:
+                                self.show_info(_("More %d pomodoro(s) till complete task") % self.task_pnt[id])
+                                comp = False
 
                 if comp:
                     self.set_tooltip(_("Marking task as completed ..."))
